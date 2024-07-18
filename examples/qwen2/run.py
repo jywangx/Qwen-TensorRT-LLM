@@ -195,6 +195,8 @@ def parse_input(tokenizer,
                                          add_special_tokens=add_special_tokens,
                                          truncation=True,
                                          max_length=max_input_length)
+            print(input_ids)
+            print(curr_text)
             batch_input_ids.append(input_ids)
     else:
         if input_file.endswith('.csv'):
@@ -351,7 +353,7 @@ def main(args):
                                   model_name=model_name,
                                   model_version=model_version)
     input_lengths = [x.size(0) for x in batch_input_ids]
-
+    logger.info(f'input_lengths: {input_lengths}')
     if not PYTHON_BINDINGS and not args.use_py_session:
         logger.warning(
             "Python bindings of C++ session is unavailable, fallback to Python session."
@@ -502,7 +504,7 @@ def main(args):
         tensorrt_llm.profiler.stop("tmp")
 
         print(
-            f"batch_size: {len(batch_input_ids)}, avg latency of {ite} iterations: : {tensorrt_llm.profiler.elapsed_time_in_sec('tmp') / ite} sec"
+            f"batch_size: {len(batch_input_ids)}, avg latency of {ite} iterations: : {tensorrt_llm.profiler.elapsed_time_in_sec('tmp') / ite} sec, seq_len: {batch_input_ids}"
         )
 
 
